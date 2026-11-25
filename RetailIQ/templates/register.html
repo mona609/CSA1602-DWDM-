@@ -1,1 +1,105 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RetailIQ - Register</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #152238, #29415e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            width: 350px;
+            border-radius: 16px;
+        }
+        h1 {
+            color: #2864e8;
+            text-align: center;
+        }
+        h2 { text-align: center; }
+        input {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            background: #2864e8;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        p { text-align: center; }
+        a { color: #164ee8; }
+        #message { color: red; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>RetailIQ</h1>
+    <p>Online Retail Sales Analytics</p>
+    <h2>Create Account</h2>
+
+    <form id="registerForm">
+        <input type="text" id="name" placeholder="Full Name" required>
+        <input type="email" id="email" placeholder="Email Address" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+        <button type="submit">Register</button>
+    </form>
+
+    <p id="message"></p>
+    <p>Already have an account? <a href="/login">Login here</a></p>
+</div>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const message = document.getElementById("message");
+
+    if (password !== confirmPassword) {
+        message.textContent = "Passwords do not match!";
+        return;
+    }
+
+    try {
+        const response = await fetch("/api/register", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({name, email, password})
+        });
+
+        const data = await response.json();
+        message.textContent = data.msg;
+
+        if (data.ok) {
+            setTimeout(() => window.location.href = "/login", 2000);
+        }
+    } catch (error) {
+        message.textContent = "Registration failed. Please try again.";
+    }
+});
+</script>
+</body>
+</html>
